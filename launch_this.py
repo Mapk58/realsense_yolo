@@ -12,7 +12,7 @@ if __name__ == "__main__":
             seconds = int(time.time()) % 10000
             print("Съёмка...")
             data = camera.get_frame_data()
-            camera.save_frame_data(f"{detail_number}__{x}-{y}__{seconds}", data)
+            camera.save_frame_data(f"data/{detail_number}__{x}-{y}__{seconds}", data)
             print("Успешно! Теперь переместите деталь или установите новую.")
         except:
             print("Что-то пошло не так. Попробуем еще раз.")
