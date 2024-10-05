@@ -20,7 +20,6 @@ class RealSenseCamera:
         self.config = rs.config()
         self.config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
         self.config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30)
-        
         self.pipeline.start(self.config)
         self.depth_sensor = self.pipeline.get_active_profile().get_device().first_depth_sensor()
         self.depth_sensor.set_option(rs.option.visual_preset, Preset.HighDensity)
@@ -34,7 +33,7 @@ class RealSenseCamera:
     #     depth_intrinsics = depth_frame.profile.as_video_stream_profile().intrinsics
     #     return depth_intrinsics
 
-    def get_frame_from_file(self, path=""):
+    def get_frame_from_file(path=""):
         data = {}
         data['color_image'] = np.load(path + '/color_image.npy')
         data['depth_accuracy'] = np.load(path + '/depth_accuracy.npy')
