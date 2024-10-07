@@ -15,12 +15,18 @@ def random_samples(data, k=0.5):
 
 def rgb_to_3d(x, y, depth):
     _intrinsics = rs.intrinsics()
+    # _intrinsics.width = 640
+    # _intrinsics.height = 480
+    # _intrinsics.fx = 608.673828125
+    # _intrinsics.fy = 607.3576049804688
+    # _intrinsics.ppx = 321.5899963378906
+    # _intrinsics.ppy = 252.52552795410156
     _intrinsics.width = 640
     _intrinsics.height = 480
-    _intrinsics.fx = 608.673828125
-    _intrinsics.fy = 607.3576049804688
-    _intrinsics.ppx = 321.5899963378906
-    _intrinsics.ppy = 252.52552795410156
+    _intrinsics.fx = 604.6063232421875
+    _intrinsics.fy = 604.6441650390625
+    _intrinsics.ppx = 315.34197998046875
+    _intrinsics.ppy = 233.6892852783203
     result = rs.rs2_deproject_pixel_to_point(_intrinsics, [x, y], depth[y][x])
     return result[0], -result[1], result[2]
 
@@ -32,7 +38,7 @@ def find_nonzero_center(depth):
 
 def find_max_table_height(depth):
     unique, counts = np.unique((depth//20).flatten(), return_counts=True)
-    return unique[1]*20 + 40
+    return unique[1]*20 + 30
 
 width = 640
 height = 480
@@ -53,6 +59,9 @@ folders = [
     '2__513-243__9858',
     '2__513-443__9926'
 ]
+
+error_x = []
+error_y = []
 
 for fld in folders:
     # camera = RealSenseCamera()
@@ -75,19 +84,24 @@ for fld in folders:
     points_3d = np.array(points_3d)
     center_x = int(np.mean(points_3d[0]))
     center_y = int(np.mean(points_3d[1]))
-    calc_x = center_x + 287
-    calc_y = center_y - 309
+    calc_x = center_x + 281
+    calc_y = center_y - 292
 
     x, y = fld.split('__')[1].split('-')
     x, y = int(x), int(y)
 
     print((x-calc_x)/10, (y+calc_y)/10)
+    error_x.append(abs(x-calc_x)/10)
+    error_y.append(abs(y+calc_y)/10)
     # print(f"{x, y} -> {center_x, center_y}")
 
 
     # print(find_nonzero_center(projection))
 
-    if True:
-        cv.imshow('image', np.uint8(cv.normalize(depth, None, 0, 255, cv.NORM_MINMAX)))
-        cv.imshow('projection', np.uint8(cv.normalize(projection, None, 0, 255, cv.NORM_MINMAX)))
-        cv.waitKey()
+    # if True:
+    #     cv.imshow('image', np.uint8(cv.normalize(depth, None, 0, 255, cv.NORM_MINMAX)))
+    #     cv.imshow('projection', np.uint8(cv.normalize(projection, None, 0, 255, cv.NORM_MINMAX)))
+    #     cv.waitKey()
+
+
+print(np.mean(np.array(error_x)), np.mean(np.array(error_y)))
